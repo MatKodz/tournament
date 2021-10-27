@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Tournoi</title>
+  <script type="application/javascript" src="https://unpkg.com/react@17.0.2/umd/react.production.min.js"></script>
+  <script type="application/javascript" src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
+  <script type="application/javascript" src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+  <style>
+     body {
+      font-family: sans-serif;
+    }
+
+      .battle-wrapper {
+        display: flex;
+      }
+
+      .battle-list {
+          display: inline-flex;
+          flex-direction: column;
+          min-height: 400px;
+          row-gap: 15px;
+          padding: 2%;
+      }
+      .battle-list-1, .battle-list-2 {
+          display: inline-flex;
+          flex-direction: column;
+          justify-content: space-around;
+          min-height: 400px;
+      }
+
+      .battle {
+          margin: 5% 3%;
+          border: 3px solid #fcfcfc;
+          padding: 0;
+          background-color: #fbfbfb;
+          width: 100%;
+          box-shadow: 2px 2px 4px #ccc;
+      }
+
+      .battle .battle-player {
+          padding: 7px;
+          display: flex;
+          align-items: center;
+          min-height: 57px;
+      }
+
+      .battle-player:first-of-type {
+          border-bottom: 1px dashed #666;
+      }
+
+
+
+      .score {
+        border-left: 2px solid rgb(205, 205, 205);
+        flex: 1 1;
+        padding-left: 7px;
+      }
+
+      .user-name{
+          flex: 2 1;
+          position: relative;
+      }
+
+          [class^="battle-player"] {
+          display: flex;
+          min-width: 220px;
+      }
+
+      .battle-player-win {
+        color: #00ae00;
+        background-color: #f6fff6;
+      }
+
+      .battle-player-loose {
+        color: #ccc;
+        background-color: #fafafa;
+      }
+
+      input {
+        max-width: 100px;
+        padding: 5px 10px;
+        border: 0;
+        border-bottom: 3px solid grey;
+        background-color: transparent;
+        height: 30px;
+
+      }
+
+      input[type="number"] {
+        width: 30px;
+        height: 30px;
+      }
+
+      label {
+        font-size: 10px;
+        display: block;
+      }
+
+      .battle h2, .battle h3 {
+        font-size: 18px;
+        margin: 0;
+      }
+
+      .listNames {
+        position: absolute;
+        left: 0;
+        top: 44px;
+        border: 1px solid rgb(211, 211, 211);
+        border-left: 3px solid grey;
+        background-color: white;
+        width: 100px;
+        z-index: 10;
+        display: none;
+      }
+
+      .listNames a {
+        display: block;
+        font-size: 12px;
+        padding: 7px 4px;
+        color: grey;
+        text-decoration: none;
+        border-bottom: 1px solid #ededed;
+      }
+
+        .listNames a:hover {
+        background-color: #ddf6ff;
+      }
+   
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+
+<script type="text/babel">
+// Obtain the root 
+    const rootElement = document.getElementById('root')
+// Create a ES6 className component 
+
+function PlayerNumber() {
+  return <div>
+    <form action="">
+      <select>
+        <option value="16">16 joueurs</option>
+        <option value="8">8 joueurs</option>
+        <option value="4">4 joueurs</option>
+        </select>
+        </form>
+    </div>
+}
+
+    function PairOfPlayers(props) {
+        const [username1, setUsername1] = React.useState("");
+        const [score1, setScore1] = React.useState(null);
+        const [username2, setUsername2] = React.useState("");
+        const [score2, setScore2] = React.useState(null);
+        const [listPlayers, setListPlayers] = React.useState(["marc","elodie","denis"]);
+        const refList = React.useRef();
+        const refList2 = React.useRef();
+   React.useEffect( () => {
+    fetch("../players-list.php")
+    .then(response => response.json() )
+    .then(data => setListPlayers(data) )
+    .catch(e => console.error('Error:' + e));
+    },[]
+    );
+
+
+
+        let classNameScore = "battle-player battle-player";
+
+        const onChangeHandle1 = (e) => { 
+            setUsername1(prevState => e.target.value) 
+            //refList.current.style.display = "none";
+        };
+        const onBlurHandleScore1 = (e) => { 
+            if (parseInt(e.target.value))
+            setScore1(prevState => e.target.value) 
+            else e.target.style = "border: 2px solid red;"
+        };
+        const onChangeHandle2 = (e) => { 
+            setUsername2(prevState => e.target.value) 
+        };
+        const onBlurHandleScore2 = (e) => { 
+            if (parseInt(e.target.value))
+            setScore2(prevState => e.target.value) 
+            else e.target.style = "border: 2px solid red;"
+        };
+
+        const onFocusHandle1 = () =>  {
+          refList.current.style.display = "block";
+        }
+
+        const onFocusHandle2 = () =>  {
+          refList2.current.style.display = "block";
+        }
+
+        const onClickListItem1 = (e) => setUsername1(e.target.textContent)
+        const onClickListItem2 = (e) => setUsername2(e.target.textContent)
+
+        return <div className="battle">
+            <div className={ !score1 ? classNameScore : score1 > score2 ? classNameScore  + "-win" : classNameScore + "-loose" }>
+                <div className="user-name">
+                { username1 ? 
+                <h2 onDoubleClick={ () => setUsername1("") }>{username1}</h2>
+                : <div><label>Name : </label>
+                <input type="text" name="username1" placeholder="Your name" onBlur={onChangeHandle1} onFocus={onFocusHandle1} />
+                <div className="listNames" ref={refList}>
+                {listPlayers.map( elt => <a href="#" onClick={onClickListItem1}>{elt}</a>)}
+                </div>
+                </div>
+            }           
+            </div>
+            <div className="score"> { score1 ? 
+                <h3>{score1}</h3>
+                : <div><label>Scoring : </label>
+                <input type="number" name="userscore1" placeholder="Your score" onBlur={onBlurHandleScore1} /></div>
+                }
+            </div>
+            </div>
+            <div className={ !score2 ? classNameScore : score2 > score1 ? classNameScore  + "-win" : classNameScore + "-loose" }>
+                <div  className="user-name">
+                { username2 ? 
+                <h2 onDoubleClick={ () => setUsername2("") }>{username2}</h2>
+                : <div><label>Name : </label>
+                <input type="text" name="username2" placeholder="Enter your name" onBlur={onChangeHandle2} onFocus={onFocusHandle2} />
+                <div className="listNames" ref={refList2}>
+                {listPlayers.map( elt => <a href="#" onClick={onClickListItem2}>{elt}</a>)}
+                </div>
+                </div>
+            }           
+            </div>
+            <div className="score"> { score2 ? 
+                <h3>{score2}</h3>
+                : <div><label>Scoring : </label>
+                <input type="number" name="userscore2" placeholder="Enter the score" onBlur={onBlurHandleScore2} /></div>
+                }
+            </div>
+            </div>
+            </div>;
+    }
+
+function Tournament(){
+  return(
+    <div className="battle-wrapper">
+      <div className="battle-list">
+      <PairOfPlayers level={1} />
+      <PairOfPlayers />
+      <PairOfPlayers />
+      <PairOfPlayers />
+    </div>
+    <div className="battle-list-1">
+      <PairOfPlayers level={2} />
+      <PairOfPlayers level={2} />
+    </div>
+    <div className="battle-list-2">
+      <PairOfPlayers level={3} />
+    </div>
+  </div>
+  )
+}
+
+
+// Use the ReactDOM.render to show your component on the browser
+    ReactDOM.render(
+      <Tournament />,
+      rootElement
+    )
+</script>
+
+</body>
+
+</html>
