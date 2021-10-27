@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -65,7 +64,7 @@
           position: relative;
       }
 
-          [class^="battle-player"] {
+      [class^="battle-player"] {
           display: flex;
           min-width: 220px;
       }
@@ -132,59 +131,49 @@
    
   </style>
 </head>
-
 <body>
-  <div id="root"></div>
-
+<div id="root"></div>
 <script type="text/babel">
 // Obtain the root 
     const rootElement = document.getElementById('root')
 // Create a ES6 className component 
-
-function PlayerNumber() {
-  return <div>
-    <form action="">
-      <select>
-        <option value="16">16 joueurs</option>
-        <option value="8">8 joueurs</option>
-        <option value="4">4 joueurs</option>
-        </select>
-        </form>
-    </div>
-}
-
     function PairOfPlayers(props) {
+
         const [username1, setUsername1] = React.useState("");
-        const [score1, setScore1] = React.useState(null);
+        const [score1, setScore1] = React.useState(0);
         const [username2, setUsername2] = React.useState("");
-        const [score2, setScore2] = React.useState(null);
+        const [score2, setScore2] = React.useState(0);
         const [listPlayers, setListPlayers] = React.useState(["marc","elodie","denis"]);
         const refList = React.useRef();
         const refList2 = React.useRef();
-   React.useEffect( () => {
-    fetch("../players-list.php")
-    .then(response => response.json() )
-    .then(data => setListPlayers(data) )
-    .catch(e => console.error('Error:' + e));
-    },[]
-    );
 
+        React.useEffect( () => {
+          fetch("../players-list.php")
+          .then(response => response.json() )
+          .then(data => setListPlayers(data) )
+          .catch(e => console.error('Error:' + e));
+          },[]
+          );
+
+          // chargement de la liste de joueurs depuis une API
 
 
         let classNameScore = "battle-player battle-player";
 
         const onChangeHandle1 = (e) => { 
             setUsername1(prevState => e.target.value) 
-            //refList.current.style.display = "none";
         };
+
         const onBlurHandleScore1 = (e) => { 
             if (parseInt(e.target.value))
             setScore1(prevState => e.target.value) 
             else e.target.style = "border: 2px solid red;"
         };
+
         const onChangeHandle2 = (e) => { 
             setUsername2(prevState => e.target.value) 
         };
+
         const onBlurHandleScore2 = (e) => { 
             if (parseInt(e.target.value))
             setScore2(prevState => e.target.value) 
@@ -204,17 +193,17 @@ function PlayerNumber() {
 
         return <div className="battle">
             <div className={ !score1 ? classNameScore : score1 > score2 ? classNameScore  + "-win" : classNameScore + "-loose" }>
-                <div className="user-name">
-                { username1 ? 
-                <h2 onDoubleClick={ () => setUsername1("") }>{username1}</h2>
-                : <div><label>Name : </label>
-                <input type="text" name="username1" placeholder="Your name" onBlur={onChangeHandle1} onFocus={onFocusHandle1} />
-                <div className="listNames" ref={refList}>
-                {listPlayers.map( elt => <a href="#" onClick={onClickListItem1}>{elt}</a>)}
-                </div>
-                </div>
-            }           
-            </div>
+                  <div className="user-name">
+                  { username1 ? 
+                  <h2 onDoubleClick={ () => setUsername1("") }>{username1}</h2>
+                  : <div><label>Name : </label>
+                  <input type="text" name="username1" placeholder="Your name" onBlur={onChangeHandle1} onFocus={onFocusHandle1} />
+                    <div className="listNames" ref={refList}>
+                    {listPlayers.map( elt => <a href="#" onClick={onClickListItem1}>{elt}</a>)}
+                    </div>
+                  </div>
+                  }           
+                  </div>
             <div className="score"> { score1 ? 
                 <h3>{score1}</h3>
                 : <div><label>Scoring : </label>
@@ -228,9 +217,9 @@ function PlayerNumber() {
                 <h2 onDoubleClick={ () => setUsername2("") }>{username2}</h2>
                 : <div><label>Name : </label>
                 <input type="text" name="username2" placeholder="Enter your name" onBlur={onChangeHandle2} onFocus={onFocusHandle2} />
-                <div className="listNames" ref={refList2}>
-                {listPlayers.map( elt => <a href="#" onClick={onClickListItem2}>{elt}</a>)}
-                </div>
+                  <div className="listNames" ref={refList2}>
+                  {listPlayers.map( elt => <a href="#" onClick={onClickListItem2}>{elt}</a>)}
+                  </div>
                 </div>
             }           
             </div>
@@ -240,30 +229,29 @@ function PlayerNumber() {
                 <input type="number" name="userscore2" placeholder="Enter the score" onBlur={onBlurHandleScore2} /></div>
                 }
             </div>
-            </div>
-            </div>;
+          </div>
+        </div>;
     }
 
 function Tournament(){
   return(
     <div className="battle-wrapper">
       <div className="battle-list">
-      <PairOfPlayers level={1} />
-      <PairOfPlayers />
-      <PairOfPlayers />
-      <PairOfPlayers />
+        <PairOfPlayers level={1} />
+        <PairOfPlayers />
+        <PairOfPlayers />
+        <PairOfPlayers />
     </div>
     <div className="battle-list-1">
-      <PairOfPlayers level={2} />
-      <PairOfPlayers level={2} />
+        <PairOfPlayers level={2} />
+        <PairOfPlayers level={2} />
     </div>
     <div className="battle-list-2">
-      <PairOfPlayers level={3} />
+        <PairOfPlayers level={3} />
     </div>
   </div>
   )
 }
-
 
 // Use the ReactDOM.render to show your component on the browser
     ReactDOM.render(
@@ -271,7 +259,5 @@ function Tournament(){
       rootElement
     )
 </script>
-
 </body>
-
 </html>
