@@ -22,13 +22,14 @@
           flex-direction: column;
           min-height: 400px;
           row-gap: 15px;
-          padding: 2%;
+          padding: 2% 4%;
       }
       .battle-list-1, .battle-list-2 {
           display: inline-flex;
           flex-direction: column;
           justify-content: space-around;
           min-height: 400px;
+          padding: 2%;
       }
 
       .battle {
@@ -38,6 +39,46 @@
           background-color: #fbfbfb;
           width: 100%;
           box-shadow: 2px 2px 4px #ccc;
+          position: relative;
+      }
+
+      .battle::after {
+          content:"";
+          background: url(arrow.svg);
+          background-size: contain;
+          background-repeat: no-repeat;
+          width: 150px;
+          height: 100px;
+          display: inline-block;
+          position: absolute;
+          right: -170px;
+          top: 0;
+          z-index: 10;
+      }
+
+      .battle:nth-of-type(odd)::after {
+          content:"";
+          background: url(arrow.svg);
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: 50% 60%;
+          width: 150px;
+          height: 100px;
+          display: inline-block;
+          position: absolute;
+          top: 0;
+          z-index: 10;
+      }
+
+      .battle:nth-of-type(even)::after {
+          background-position: 50% 10%;
+          transform: scaleY(-1);
+          top: initial;
+          bottom: 10px;
+      }
+
+      .battle-list-2 .battle::after {
+        content: unset;
       }
 
       .battle .battle-player {
@@ -57,6 +98,7 @@
         border-left: 2px solid rgb(205, 205, 205);
         flex: 1 1;
         padding-left: 7px;
+        text-align: center;
       }
 
       .user-name{
@@ -84,6 +126,7 @@
         padding: 5px 10px;
         border: 0;
         border-bottom: 3px solid grey;
+        border-radius: 0;
         background-color: transparent;
         height: 30px;
 
@@ -128,15 +171,15 @@
         .listNames a:hover {
         background-color: #ddf6ff;
       }
-   
+
   </style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
-// Obtain the root 
+// Obtain the root
     const rootElement = document.getElementById('root')
-// Create a ES6 className component 
+// Create a ES6 className component
     function PairOfPlayers(props) {
 
         const [username1, setUsername1] = React.useState("");
@@ -160,23 +203,23 @@
 
         let classNameScore = "battle-player battle-player";
 
-        const onChangeHandle1 = (e) => { 
-            setUsername1(prevState => e.target.value) 
+        const onChangeHandle1 = (e) => {
+            setUsername1(prevState => e.target.value)
         };
 
-        const onBlurHandleScore1 = (e) => { 
+        const onBlurHandleScore1 = (e) => {
             if (parseInt(e.target.value))
-            setScore1(prevState => e.target.value) 
+            setScore1(prevState => Number(e.target.value) )
             else e.target.style = "border: 2px solid red;"
         };
 
-        const onChangeHandle2 = (e) => { 
-            setUsername2(prevState => e.target.value) 
+        const onChangeHandle2 = (e) => {
+            setUsername2(prevState => e.target.value)
         };
 
-        const onBlurHandleScore2 = (e) => { 
+        const onBlurHandleScore2 = (e) => {
             if (parseInt(e.target.value))
-            setScore2(prevState => e.target.value) 
+            setScore2(prevState => Number(e.target.value) )
             else e.target.style = "border: 2px solid red;"
         };
 
@@ -194,7 +237,7 @@
         return <div className="battle">
             <div className={ !score1 ? classNameScore : score1 > score2 ? classNameScore  + "-win" : classNameScore + "-loose" }>
                   <div className="user-name">
-                  { username1 ? 
+                  { username1 ?
                   <h2 onDoubleClick={ () => setUsername1("") }>{username1}</h2>
                   : <div><label>Name : </label>
                   <input type="text" name="username1" placeholder="Your name" onBlur={onChangeHandle1} onFocus={onFocusHandle1} />
@@ -202,9 +245,9 @@
                     {listPlayers.map( elt => <a href="#" onClick={onClickListItem1}>{elt}</a>)}
                     </div>
                   </div>
-                  }           
+                  }
                   </div>
-            <div className="score"> { score1 ? 
+            <div className="score"> { score1 ?
                 <h3>{score1}</h3>
                 : <div><label>Scoring : </label>
                 <input type="number" name="userscore1" placeholder="Your score" onBlur={onBlurHandleScore1} /></div>
@@ -213,7 +256,7 @@
             </div>
             <div className={ !score2 ? classNameScore : score2 > score1 ? classNameScore  + "-win" : classNameScore + "-loose" }>
                 <div  className="user-name">
-                { username2 ? 
+                { username2 ?
                 <h2 onDoubleClick={ () => setUsername2("") }>{username2}</h2>
                 : <div><label>Name : </label>
                 <input type="text" name="username2" placeholder="Enter your name" onBlur={onChangeHandle2} onFocus={onFocusHandle2} />
@@ -221,9 +264,9 @@
                   {listPlayers.map( elt => <a href="#" onClick={onClickListItem2}>{elt}</a>)}
                   </div>
                 </div>
-            }           
+            }
             </div>
-            <div className="score"> { score2 ? 
+            <div className="score"> { score2 ?
                 <h3>{score2}</h3>
                 : <div><label>Scoring : </label>
                 <input type="number" name="userscore2" placeholder="Enter the score" onBlur={onBlurHandleScore2} /></div>
