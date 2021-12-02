@@ -85,7 +85,7 @@ if(isset($_POST['creer'])) {
             <div>{$player['player_name']}</div>
             <div>{$player['player_register']}</div>
             <div>{$player['player_id']}</div>";
-            echo '<div><form method="post" action="./remove_user/"><input name="iduser" type="hidden" value="'.$player['player_id'].'"><input type="submit" class="btn btn-danger" value="Supprimer '.$player['player_name'].'"></form></div>';
+            echo '<div><form method="post" action="./remove_user/"><input name="iduser" type="hidden" value="'.$player['player_id'].'"><input type="submit" class="btn btn-danger" value="Supprimer"></form></div>';
             echo "</div>";
         }
         $dbh = null;
