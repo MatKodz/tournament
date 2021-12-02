@@ -1,0 +1,167 @@
+/* CSS tournament */
+
+body {
+ font-family: sans-serif;
+}
+
+ .battle-wrapper {
+   display: flex;
+ }
+
+ .battle-list {
+     display: inline-flex;
+     flex-direction: column;
+     min-height: 400px;
+     row-gap: 15px;
+     padding: 2% 4%;
+ }
+ .battle-list-1, .battle-list-2 {
+     display: inline-flex;
+     flex-direction: column;
+     justify-content: space-around;
+     min-height: 400px;
+     padding: 2%;
+ }
+
+ .battle {
+     margin: 5% 3%;
+     border: 3px solid #fcfcfc;
+     padding: 0;
+     background-color: #fbfbfb;
+     width: 100%;
+     box-shadow: 2px 2px 4px #ccc;
+     position: relative;
+ }
+
+ .battle::after {
+     content:"";
+     background: url("/arrow.4567c4f3.svg");
+     background-size: contain;
+     background-repeat: no-repeat;
+     width: 150px;
+     height: 100px;
+     display: inline-block;
+     position: absolute;
+     right: -170px;
+     top: 0;
+     z-index: 10;
+ }
+
+ .battle:nth-of-type(odd)::after {
+     content:"";
+     background: url("/arrow.4567c4f3.svg");
+     background-size: contain;
+     background-repeat: no-repeat;
+     background-position: 50% 60%;
+     width: 150px;
+     height: 100px;
+     display: inline-block;
+     position: absolute;
+     top: 0;
+     z-index: 10;
+ }
+
+ .battle:nth-of-type(even)::after {
+     background-position: 50% 10%;
+     transform: scaleY(-1);
+     top: initial;
+     bottom: 10px;
+ }
+
+ .battle-list-2 .battle::after {
+   content: unset;
+ }
+
+ .battle .battle-player {
+     padding: 7px;
+     display: flex;
+     align-items: center;
+     min-height: 57px;
+ }
+
+ .battle-player:first-of-type {
+     border-bottom: 1px dashed #666;
+ }
+
+
+
+ .score {
+   border-left: 2px solid rgb(205, 205, 205);
+   flex: 1 1;
+   padding-left: 7px;
+   text-align: center;
+ }
+
+ .user-name{
+     flex: 2 1;
+     position: relative;
+ }
+
+ [class^="battle-player"] {
+     display: flex;
+     min-width: 220px;
+ }
+
+ .battle-player-win {
+   color: #00ae00;
+   background-color: #f6fff6;
+ }
+
+ .battle-player-loose {
+   color: #ccc;
+   background-color: #fafafa;
+ }
+
+ input {
+   max-width: 100px;
+   padding: 5px 10px;
+   border: 0;
+   border-bottom: 3px solid grey;
+   border-radius: 0;
+   background-color: transparent;
+   height: 30px;
+
+ }
+
+ input[type="number"] {
+   width: 30px;
+   height: 30px;
+ }
+
+ label {
+   font-size: 10px;
+   display: block;
+ }
+
+ .battle h2, .battle h3 {
+   font-size: 18px;
+   margin: 0;
+ }
+
+ .listNames {
+   position: absolute;
+   left: 0;
+   top: 44px;
+   border: 1px solid rgb(211, 211, 211);
+   border-left: 3px solid grey;
+   background-color: white;
+   width: 100px;
+   z-index: 10;
+   display: none;
+ }
+
+ .listNames a {
+   display: block;
+   font-size: 12px;
+   padding: 7px 4px;
+   color: grey;
+   text-decoration: none;
+   border-bottom: 1px solid #ededed;
+ }
+
+   .listNames a:hover {
+   background-color: #ddf6ff;
+ }
+
+
+/*# sourceMappingURL=/src.a2b27638.css.map */
