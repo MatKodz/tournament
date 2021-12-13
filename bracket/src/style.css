@@ -33,7 +33,7 @@ body {
      position: relative;
  }
 
- .battle::after {
+ [class^="battle-list-"] .battle::before  {
      content:"";
      background: url("arrow.svg");
      background-size: contain;
@@ -42,12 +42,12 @@ body {
      height: 100px;
      display: inline-block;
      position: absolute;
-     right: -170px;
-     top: 0;
+     left: -30px;
+     top: -80px;
      z-index: 10;
  }
 
- .battle:nth-of-type(odd)::after {
+  [class^="battle-list-"] .battle::after  {
      content:"";
      background: url("arrow.svg");
      background-size: contain;
@@ -57,19 +57,10 @@ body {
      height: 100px;
      display: inline-block;
      position: absolute;
-     top: 0;
+     left: -30px;
+     bottom: -100px;
      z-index: 10;
- }
-
- .battle:nth-of-type(even)::after {
-     background-position: 50% 10%;
-     transform: scaleY(-1);
-     top: initial;
-     bottom: 10px;
- }
-
- .battle-list-2 .battle::after {
-   content: unset;
+    transform: scaleY(-1);
  }
 
  .battle .battle-player {
@@ -136,6 +127,7 @@ body {
  .battle h2, .battle h3 {
    font-size: 18px;
    margin: 0;
+   font-weight: 500;
  }
 
  .listNames {
@@ -161,4 +153,82 @@ body {
 
    .listNames a:hover {
    background-color: #ddf6ff;
+ }
+
+  [class^="battle-list-"] .battle {
+   opacity: 0;
+ }
+
+
+ [class^="battle-list-"] .battle.fade-answers-appear {
+   opacity: 0;
+   left: -30px;
+   position: relative;
+ }
+
+ [class^="battle-list-"] .battle.fade-answers-done.fade-answers-enter-done {
+   opacity: 1;
+   position: relative;
+   left: 0px;
+ }
+
+ [class^="battle-list-"] .battle.fade-answers-appear-active {
+   opacity: 1;
+   left: 0px;
+   transition: all 500ms;
+ }
+
+ [class^="battle-list-"] .battle.fade-answers-enter {
+   opacity: 0;
+   position: relative;
+   left: -30px;
+ }
+
+ [class^="battle-list-"] .battle.fade-answers-enter-active {
+   opacity: 1;
+   left: 0px;
+   transition: all 500ms;
+ }
+
+ [class^="battle-list-"] .battle.fade-answers-enter-done {
+   opacity: 1;
+   left: 0px;
+ }
+
+ [class^="battle-list-"] .battle.fade-answers-exit {
+   opacity: 1;
+   left: 0px;
+   position: relative;
+ }
+
+ [class^="battle-list-"] .battle.fade-answers-exit-active {
+   opacity: 0;
+   left: -30px;
+   transition: all 500ms;
+ }
+
+ [class^="battle-list-"] .battle.fade-answers-exit-done {
+   opacity: 0;
+ }
+
+ .alert-wrapper {
+   display: flex;
+   position: fixed;
+   top: 0;
+   left: 0;
+   z-index: 100;
+   width: 100vw;
+   height: 100vh;
+   background-color: #000000cc;
+   justify-content: center;
+   align-items: center;
+ }
+
+ .alert-warning {
+   width: 250px;
+   padding: 30px 40px;
+   background-color: white;
+   color: #c10;
+   border-bottom: #c10 4px solid;
+   border-radius: 3px;
  }
