@@ -2,6 +2,12 @@
 
 body {
  font-family: sans-serif;
+ margin: 0;
+}
+
+#app {
+  max-width: 1024px;
+  margin: 0 auto;
 }
 
  .battle-wrapper {
@@ -9,26 +15,43 @@ body {
  }
 
  .battle-list {
-     display: inline-flex;
+     display: flex;
      flex-direction: column;
      min-height: 400px;
-     row-gap: 15px;
-     padding: 2% 4%;
+     row-gap: 10px;
+     padding: 0 10px 10px;
+     height: 100%;
+    justify-content: space-around;
  }
  .battle-list-1, .battle-list-2 {
-     display: inline-flex;
+     display: flex;
      flex-direction: column;
      justify-content: space-around;
-     min-height: 400px;
      padding: 2%;
+     height: 100%;
+ }
+
+ .battle-inner {
+   flex: 1 1;
+ }
+
+
+ .battle-inner > h3 {
+   font-style: italic;
+   margin:15px;
+   padding: 5px;
+   color: #BBB;
+   font-weight: 200;
+   font-size: 14px;
+   text-align: center;
+   border-bottom: 1px dotted #bbb;
  }
 
  .battle {
-     margin: 5% 3%;
+     margin: 0 3% 5%;
      border: 3px solid #fcfcfc;
      padding: 0;
      background-color: #fbfbfb;
-     width: 100%;
      box-shadow: 2px 2px 4px #ccc;
      position: relative;
  }
@@ -86,7 +109,24 @@ body {
  .user-name{
      flex: 2 1;
      position: relative;
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     padding-right: 10px;
  }
+
+ .user-name span.no-picture{
+     box-sizing: border-box;
+     border: #aaa solid 1px;
+     color: #777;
+     background-color: white;
+     display: inline-block;
+     width: 35px;
+     height: 35px;
+     background-image: linear-gradient(45deg, #bbb 25%, transparent 25%, transparent 75%, #bbb 75%), linear-gradient(45deg, #bbb 25%, transparent 25%, transparent 75%, #bbb 75%);
+     background-size: 10px 10px;
+     background-position: 0 0, 5px 5px;
+   }
 
  [class^="battle-player"] {
      display: flex;
@@ -213,22 +253,74 @@ body {
 
  .alert-wrapper {
    display: flex;
-   position: fixed;
-   top: 0;
-   left: 0;
-   z-index: 100;
-   width: 100vw;
-   height: 100vh;
-   background-color: #000000cc;
-   justify-content: center;
+   background-color: #cc110011;
+   justify-content: space-around;
    align-items: center;
+   border-bottom: #c10 4px solid;
+   color: #c10;
+ }
+
+ .alert-wrapper span {
+   cursor: pointer;
  }
 
  .alert-warning {
-   width: 250px;
-   padding: 30px 40px;
-   background-color: white;
-   color: #c10;
-   border-bottom: #c10 4px solid;
-   border-radius: 3px;
+   padding: 10px;
+
+ }
+
+ .register {
+   text-align: right;
+ }
+
+ .register button {
+   display: inline-block;
+   padding: 8px;
+   background-color: navy;
+   color: white;
+   border: 0;
+   border-radius: 4px;
+ }
+
+ h2 + img {
+   width : 35px;
+ }
+
+ @media (max-width: 760px) {
+   #app {
+     width: 100%;
+     padding: 10px;
+     box-sizing: border-box;
+   }
+   .battle {
+     margin: 10px 0;
+   }
+   .battle-wrapper {
+     flex-flow: column;
+   }
+   .battle-list {
+     padding: 3%;
+     row-gap: 5px;
+   }
+   .battle h2 {
+     font-size: 15px;
+   }
+   .battle .battle-player {
+     min-height: initial;
+   }
+
+   input[type="number"] {
+     padding: 0;
+     max-width: 80%;
+     width: 100%;
+   }
+
+   [class^="battle-list-"] .battle::before  {
+       display: none;
+   }
+
+    [class^="battle-list-"] .battle::after  {
+       display: none;
+   }
+
  }
