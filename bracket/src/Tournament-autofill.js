@@ -1,18 +1,75 @@
 import React from 'react';
-import {CSSTransition} from 'react-transition-group';
+import {Transition,CSSTransition} from 'react-transition-group';
 
 
 // Create a ES6 class component
+function Player_test(props) {
+  let joueurs = [,];
+
+  if(props.usernames.length) {
+    joueurs = props.usernames
+  }
+  console.log("from test",joueurs)
+  return <div>
+  <p>
+
+  </p>
+  {
+    props.usernames.map( (elt,i) => <p key={i}> ll : {elt.player_name} </p> )
+  }
+  </div>
+}
+
 function Player(props) {
+  const [score,setScore] = React.useState(null);
+
+    const onChangeHandleScore = (e) => {
+        if (Number(e.target.value)) {
+          setScore(e.target.value)
+        }
+    }
+
+  let className = "battle-player ";
+  className += !props.winner ? "battle-player" : props.winner == props.item ? "battle-player-win" : "battle-player-loose";
+
+  return    <div className={className} >
+            <div className="user-name">
+            <h2>{props.joueur.player_name}</h2>
+            { props.joueur.player_avatar ?
+            <img src={"http://localhost:8888/classkodz/tournament/" + props.joueur.player_avatar} alt="" />
+            : <span className="no-picture"></span>
+            }
+            </div>
+            <div className="score"> { props.score ?
+                <h3>{props.score}</h3>
+                : <div><label>Scoring : </label>
+                <input type="number" name={"userscore" + props.item} placeholder="Enter the score" onBlur={props.onBlurHandleScore} /></div>
+                }
+            </div>
+          </div>
+}
+
+function DuoPlayer(props) {
     const [score1, setScore1] = React.useState(null);
     const [score2, setScore2] = React.useState(null);
+    const [winnerParty, setWinnerParty] = React.useState(0);
 
-    let className = "battle-player battle-player";
+    const onBlurHandleScore = (e) => {
+        switch (e.target.name) {
+          case "userscore1" : setScore1(Number(e.target.value));
+            break;
+          case "userscore2" : setScore2(Number(e.target.value));
+          default: console.log("default")
+        }
+    }
 
     React.useEffect( () => {
       if(score1 && score2) {
-        let winner = score1 > score2 ? props.username[0] : score2 > score1 ? props.username[1] : null;
+        let winner = score1 > score2 ? props.usernames[0] : score2 > score1 ? props.usernames[1] : null;
         props.parentCallback(winner,props.roundLevel,props.indexGroupPlayer)
+        if(score1 > score2)
+        setWinnerParty(1)
+        else if(score2 > score1) setWinnerParty(2)
         if(winner == null)
         {
           setScore1(null)
@@ -25,15 +82,15 @@ function Player(props) {
 
     const checkScore = ()  => {
       if(score1 && score2 && score1 == score2) {
-        console.log("id")
         setScore1(null)
         setScore2(null)
       }
     }
-
+    /*
     const onChangeHandle = (e) => {
         setUsername(prevState => e.target.value)
     };
+    */
     const onBlurHandleScore1 = (e) => {
         if ( parseInt(e.target.value) ) {
             setScore1(prevState => e.target.value)
@@ -46,9 +103,19 @@ function Player(props) {
         }
         else e.target.style = "border: 2px solid red;"
     };
+
+    return <div className="battle">
+      {
+        props.usernames.map( (joueur,i) => <Player score={ i == 0 ? score1 : i == 1 ? score2 : null} winner={winnerParty} key={i} joueur={joueur} onBlurHandleScore={onBlurHandleScore} item={i+1} /> )
+      }
+      </div>
+    /*
     return <div className="battle">
         <div className={ !score1 ? className : score1 > score2 ? className  + "-win" : className + "-loose" }>
-        <div  className="user-name"><h2>{props.username[0]}</h2></div>
+        <div className="user-name">
+        <h2>{joueurs[0].player_name}</h2>
+        <img src={"http://localhost:8888/classkodz/tournament/" + joueurs[0].player_avatar} alt="" />
+        </div>
         <div className="score"> { score1 ?
             <h3>{score1}</h3>
             : <div><label>Scoring : </label>
@@ -57,7 +124,10 @@ function Player(props) {
         </div>
         </div>
         <div className={ !score2 ? className : score2 > score1 ? className  + "-win" : className + "-loose" }>
-        <div  className="user-name"><h2>{props.username[1]}</h2></div>
+        <div  className="user-name">
+        <h2>{joueurs[1].player_name}</h2>
+        <img src={"http://localhost:8888/classkodz/tournament/" + joueurs[1].player_avatar} alt="" />
+        </div>
         <div className="score"> { score2 ?
             <h3>{score2}</h3>
             : <div><label>Scoring : </label>
@@ -66,6 +136,7 @@ function Player(props) {
         </div>
         </div>
      </div>;
+     */
 }
 
 function MessageBox(props) {
@@ -103,7 +174,8 @@ function Tournament(){
       "round2" : [[],[]],
       "round3" : [[]],
       "final" : [[]]
-    })
+    });
+
     const stateBrackets = React.useRef();
 
     let numberPlayers = brackets.round1.flat().length
@@ -111,7 +183,7 @@ function Tournament(){
     stateBrackets.current = brackets;
 
       const shufflePlayers = (list) => {
-      list.sort((a, b) => 0.5 - Math.random());
+      list.sort( (a, b) => 0.5 - Math.random());
       let group = []
       let groupPlayers = []
       list.forEach( (elt,i) => {
@@ -125,11 +197,12 @@ function Tournament(){
       }
 
       React.useEffect(() => {
-        fetch("https://class-kodz.alwaysdata.net/demo/tournament/players-list.php")
+        fetch("http://localhost:8888/classkodz/tournament/players-list.php")
         .then(response => response.json() )
         .then(data =>
-          { if ( data.length !== 0 && data.length !== 9)
-            setBrackets({...brackets,"round1": shufflePlayers(data) } )
+          {
+            if ( data.length !== 0 && data.length !== 9)
+            setBrackets( {...brackets,"round1": shufflePlayers(data) } )
             else setHasError("Nombre joueur erroné")
           }
          )
@@ -146,16 +219,7 @@ function Tournament(){
         let roundList = stateBrackets.current[levelWinner].slice()
         let indexGroup = Math.floor(indexWinner / 2)
         let indexPlayer = indexWinner % 2
-        console.log(roundList,indexGroup,indexPlayer)
         roundList[indexGroup][indexPlayer] = nameWinner
-        /*if (r1.length > 0 && r1[r1.length - 1 ].length < 2) {
-
-        }*/
-        /*
-        else {
-        r1.push([nameWinner])
-        }
-        */
         let tempBrackets = {...stateBrackets.current}
         tempBrackets[levelWinner] = roundList
         setBrackets(tempBrackets);
@@ -168,9 +232,20 @@ function Tournament(){
       setHasError("")
     }
 
+    const defaultStyle = {
+      transition: `opacity 300ms ease-in-out`,
+      opacity: 0
+    }
+
+    const transitionStyles = {
+      entering: { opacity: 0 },
+      entered:  { opacity: 1 },
+      exiting:  { opacity: 1 },
+      exited:  { opacity: 0 },
+    };
 
 return(
-    <div>
+    <div className="main">
     { hasError  ?
       <MessageBox handleClick={handleClick}>
       {hasError}
@@ -178,34 +253,53 @@ return(
       : "" }
 
      <div className="battle-wrapper">
-      <div className="battle-list">
-          {
-            brackets.round1.map( (players,i) => <Player parentCallback={callbackPlayer} username={ players } key={i} roundLevel={"round2"} indexGroupPlayer={i} /> )
+      <div className="battle-inner">
+        <h3>Quart</h3>
+         <div className="battle-list">
+        {
+            brackets.round1.map( (players,i) =>
+            <DuoPlayer parentCallback={callbackPlayer} usernames={players} key={i} roundLevel={"round2"} indexGroupPlayer={i} />
+          )
         }
-        </div>
+       </div>
+      </div>
 
+      <div className="battle-inner">
+        <h3>Demi</h3>
         <div className="battle-list-1">
-       {
+         {
             brackets.round2.map( (players,i) =>
-            <CSSTransition appear in={ brackets.round2[i].length > 0 } timeout={500} classNames="fade-answers" key={i}>
-            <Player parentCallback={callbackPlayer} username={ players } roundLevel={"round3"} indexGroupPlayer={i}  />
+            <CSSTransition appear in={brackets.round2[i].length > 1} timeout={500} classNames="fade-answers" key={i}>
+            <DuoPlayer parentCallback={callbackPlayer} usernames={ players } roundLevel={"round3"} indexGroupPlayer={i} key={i} />
             </CSSTransition>
-            )
+         )
         }
+         </div>
         </div>
 
-
-        <div className="battle-list-2">
+        <div className="battle-inner">
+         <h3>Final</h3>
+         <div className="battle-list-2">
         {
              brackets.round3.map( (players,i) =>
-             <CSSTransition appear in={brackets.round3[i].length > 0} timeout={500} classNames="fade-answers" key={i}>
-             <Player parentCallback={callbackPlayer} username={ players } roundLevel={"final"} indexGroupPlayer={i} />
+             <CSSTransition appear in={brackets.round3[i].length > 1} timeout={500} classNames="fade-answers" key={i}>
+             <DuoPlayer parentCallback={callbackPlayer} usernames={ players } roundLevel={"final"} indexGroupPlayer={i} />
              </CSSTransition>
              )
          }
         </div>
-    </div>
-    <RegisterBracket brackets={brackets} />
+      </div>
+     </div>
+     <Transition in={brackets.final[0][0]} timeout={400}>
+     {state => (
+       <div style={{
+         ...defaultStyle,
+         ...transitionStyles[state]
+       }}>
+       <RegisterBracket brackets={brackets} />
+       </div>
+     )}
+   </Transition>
     </div>
 )
 }
