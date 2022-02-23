@@ -1,17 +1,38 @@
 <?php
 
+function cropResizeImage($inputImg,$inputName) {
+        $destination = "avatar/$inputName";
+        $sourceImage = imagecreatefromjpeg($inputImg);
+        if($sourceImage == false)
+        $sourceImage = imagecreatefromstring(file_get_contents($inputImg));
+        $orgWidth = imagesx($sourceImage);
+        $orgHeight = imagesy($sourceImage);
+        $ref_size = ($orgWidth > $orgHeight) ? $orgHeight : $orgWidth;
+        $destImage = imagecreatetruecolor(128,128);
+        imagecopyresampled($destImage, $sourceImage, 0, 0, 0, 0, 128, 128, $ref_size, $ref_size);
+        imagejpeg($destImage, $destination);
+        imagedestroy($sourceImage);
+        imagedestroy($destImage);
+}
+
 if(isset($_POST['creer'])) {
     $pattern = '/^[a-zA-Z0-9]{3,}$/';
-    if ( preg_match($pattern,$_POST['joueur']) ) {
+    $avatar = $_FILES['avatar'];
+    if ( preg_match($pattern,$_POST['joueur']) && $avatar['error'] == 0 ) {
         require_once "connect.php";
-        echo "Le joueur <b>" . $_POST['joueur'] . "</b> a bien été ajouté ";
-        $req = "INSERT INTO players VALUES (NULL, ? , NOW() )";
+        $req = "INSERT INTO players VALUES (NULL, ? , NOW(), ? )";
         $sth = $dbh->prepare($req);
         $player_name = trim($_POST['joueur']);
-        if ( $sth->execute( [ucfirst($player_name)] ) )
+        $sth->bindValue(1,ucfirst($player_name),PDO::PARAM_STR);
+        $sth->bindValue(2,"avatar/".strtolower($player_name).".jpg",PDO::PARAM_STR);
+        if ( $sth->execute()  )
+        {
+        cropResizeImage($avatar['tmp_name'],strtolower($player_name).".jpg");
+        //move_uploaded_file($avatar['tmp_name'],"avatar/".$avatar['name']);
         $msg_s =  "Le joueur <b>" . $_POST['joueur'] . "</b> a bien été ajouté ";
+        }
     }
-    else $msg_f = "Format incorrect";
+    else $msg_f = "Format incorrect, ou image manquante";
 }
 
 ?>
@@ -28,12 +49,14 @@ if(isset($_POST['creer'])) {
             display: flex;
             justify-content: space-between;
             padding: 5px;
+            align-items: center;
         }
 
         div.player {
           border-bottom: 1px dotted #ccc;
           padding: 7px 0;
           margin: 7px 0;
+          vertical-align: center;
         }
 
         .list-players div.player div, .head-list-players div {
@@ -58,14 +81,23 @@ if(isset($_POST['creer'])) {
           visibility: hidden;
         }
 
+        form label {
+          padding: 5px;
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
             <div class="jumbotron bg-light p-5 my-3">
                 <h1>Créer un joueur</h1>
-                <form action="" method="post">
-                <input type="text" name="joueur" class="w-50 p-2" placeholder="Entrer le nom du joueur">
+                <form enctype="multipart/form-data" action="" method="post" class="d-flex align-items-center">
+                  <div class="flex-grow-1">
+                    <label>Joueur</label><input type="text" name="joueur" class="w-75 p-2" placeholder="Entrer le nom du joueur">
+                  </div>
+                  <div class="flex-grow-1">
+                    <label>Votre avatar</label><input type="file" name="avatar" value="">
+                  </div>
                 <input type="submit" name="creer" value="Créer le joueur" class="mx-2 btn btn-success btn-lg">
                 </form>
                 <?= (isset($msg_s)) ? '<p class="alert alert-success my-3">' . $msg_s .  '</p>' : "" ?>
@@ -76,7 +108,12 @@ if(isset($_POST['creer'])) {
         <div class="row">
         <h2>Afficher tous les joueurs</h2>
         <div class="list-players">
-        <div class="head-list-players"><div>Joueur</div><div>Date </div><div>Id</div><div>Actions</div></div>
+        <div class="head-list-players">
+          <div>Joueur</div>
+          <div>Date </div>
+          <div>Id</div>
+          <div>Avatar</div>
+          <div>Actions</div></div>
         <?php
         $reqall = "SELECT * FROM players ORDER BY player_register DESC";
         require_once "connect.php";
@@ -84,7 +121,8 @@ if(isset($_POST['creer'])) {
             echo "<div class=\"player\">
             <div>{$player['player_name']}</div>
             <div>{$player['player_register']}</div>
-            <div>{$player['player_id']}</div>";
+            <div>{$player['player_id']}</div>
+            <div><img src=\"{$player['player_avatar']}\" alt=\"\"></div>";
             echo '<div><form method="post" action="./remove_user/"><input name="iduser" type="hidden" value="'.$player['player_id'].'"><input type="submit" class="btn btn-danger" value="Supprimer"></form></div>';
             echo "</div>";
         }

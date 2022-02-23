@@ -36,7 +36,7 @@ function Player(props) {
             <div className="user-name">
             <h2>{props.joueur.player_name}</h2>
             { props.joueur.player_avatar ?
-            <img src={"http://localhost:8888/classkodz/tournament/" + props.joueur.player_avatar} alt="" />
+            <img src={"../" + props.joueur.player_avatar} alt="" />
             : <span className="no-picture"></span>
             }
             </div>
@@ -109,34 +109,6 @@ function DuoPlayer(props) {
         props.usernames.map( (joueur,i) => <Player score={ i == 0 ? score1 : i == 1 ? score2 : null} winner={winnerParty} key={i} joueur={joueur} onBlurHandleScore={onBlurHandleScore} item={i+1} /> )
       }
       </div>
-    /*
-    return <div className="battle">
-        <div className={ !score1 ? className : score1 > score2 ? className  + "-win" : className + "-loose" }>
-        <div className="user-name">
-        <h2>{joueurs[0].player_name}</h2>
-        <img src={"http://localhost:8888/classkodz/tournament/" + joueurs[0].player_avatar} alt="" />
-        </div>
-        <div className="score"> { score1 ?
-            <h3>{score1}</h3>
-            : <div><label>Scoring : </label>
-            <input type="number" name="userscore1" placeholder="Enter the score" onBlur={onBlurHandleScore1} /></div>
-            }
-        </div>
-        </div>
-        <div className={ !score2 ? className : score2 > score1 ? className  + "-win" : className + "-loose" }>
-        <div  className="user-name">
-        <h2>{joueurs[1].player_name}</h2>
-        <img src={"http://localhost:8888/classkodz/tournament/" + joueurs[1].player_avatar} alt="" />
-        </div>
-        <div className="score"> { score2 ?
-            <h3>{score2}</h3>
-            : <div><label>Scoring : </label>
-            <input type="number" name="userscore2" placeholder="Enter the score" onBlur={onBlurHandleScore2} /></div>
-            }
-        </div>
-        </div>
-     </div>;
-     */
 }
 
 function MessageBox(props) {
@@ -197,11 +169,11 @@ function Tournament(){
       }
 
       React.useEffect(() => {
-        fetch("http://localhost:8888/classkodz/tournament/players-list.php")
+        fetch("../players-list-avatar.php")
         .then(response => response.json() )
         .then(data =>
           {
-            if ( data.length !== 0 && data.length !== 9)
+            if ( data.length !== 0 && data.length == 8)
             setBrackets( {...brackets,"round1": shufflePlayers(data) } )
             else setHasError("Nombre joueur erroné")
           }
