@@ -252,20 +252,28 @@ body {
  }
 
  .alert-wrapper {
-   display: flex;
-   background-color: #cc110011;
-   justify-content: space-around;
-   align-items: center;
-   border-bottom: #c10 4px solid;
-   color: #c10;
+    display: flex;
+    position: fixed;
+    right: 0px;
+    top: 50px;
+    z-index: 10;
+    background-color: #fff4f3;
+    justify-content: space-around;
+    align-items: center;
+    border-bottom: #c10 4px solid;
+    color: #c10;
+    box-shadow: #3332 -5px 5px 10px;
  }
 
  .alert-wrapper span {
    cursor: pointer;
+   align-self: self-start;
+   padding: 10px;
  }
 
  .alert-warning {
-   padding: 10px;
+   padding: 25px;
+   font-size: 150%;
 
  }
 
